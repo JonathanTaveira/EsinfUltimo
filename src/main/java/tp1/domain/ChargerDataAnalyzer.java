@@ -19,22 +19,22 @@ public class ChargerDataAnalyzer {
             int stalls = data.getStalls();
 
             // Atualizar o mapa por país e cidade
-            updateChargerDataByCountryCity(country, city);
+            updateChargerDataByCountryCity(country, city, stalls);
 
             // Atualizar o mapa por país e kW
             updateChargerDataByCountryKw(country, kW, stalls);
         }
     }
 
-    private void updateChargerDataByCountryCity(String country, String city) {
+    private void updateChargerDataByCountryCity(String country, String city, int stalls) {
         // Verifica se o país já existe no mapa
         if (!chargerDataByCountryCity.containsKey(country)) {
             chargerDataByCountryCity.put(country, new HashMap<>());
         }
 
-        // Atualiza o mapa interno do país com o número de carregadores por cidade
+        // Atualiza o mapa interno do país com o número de carregadores (stalls) por cidade
         Map<String, Integer> cityChargerData = chargerDataByCountryCity.get(country);
-        cityChargerData.put(city, cityChargerData.getOrDefault(city, 0) + 1);
+        cityChargerData.put(city, cityChargerData.getOrDefault(city, 0) + stalls);
     }
 
     private void updateChargerDataByCountryKw(String country, int kW, int stalls) {
