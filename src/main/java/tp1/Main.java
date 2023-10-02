@@ -3,6 +3,7 @@ package tp1;
 import java.util.Scanner;
 
 import static tp1.ui.First.first;
+import static tp1.ui.Fourth.fourth;
 import static tp1.ui.Second.second;
 import static tp1.ui.Third.third;
 
@@ -34,6 +35,7 @@ public class Main {
                     break;
                 case "4":
                     System.out.println("Option 4 selected");
+                    fourth(chargerFilePath);
                     break;
                 case "5":
                     System.out.println("Option 5 selected");
