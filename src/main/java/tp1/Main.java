@@ -48,6 +48,7 @@ public class Main {
                     break;
                 case "8":
                     System.out.println("Option 8 selected");
+
                     break;
                 case "9":
                     System.out.println("Exiting the application...");

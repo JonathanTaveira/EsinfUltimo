@@ -44,8 +44,10 @@ public class Second {
             }
 
 
-
-
-            analyzer.findCountriesWithNoIncrease();
+            System.out.println("Returning to main menu... ");
         }
+
+
+
+
 }
