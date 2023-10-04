@@ -12,7 +12,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String choice;
 
-        // Caminhos dos arquivos CSV
+        // File paths
         String evFilePath = "ev_sales.csv";
         String chargerFilePath = "carregadores_europa.csv";
 
@@ -48,7 +48,6 @@ public class Main {
                     break;
                 case "8":
                     System.out.println("Option 8 selected");
-
                     break;
                 case "9":
                     System.out.println("Exiting the application...");

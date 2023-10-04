@@ -90,7 +90,7 @@ public class ChargerDataAnalyzer {
         List<String> result = new ArrayList<>();
 
         // Cabeçalho da tabela compacta
-        result.add(String.format("%-20s %-10s %-10s %-10s", "País", "kW > " + kWThreshold, "kW <= " + kWThreshold, "Total"));
+        result.add(String.format("%-20s | %10s | %10s | %10s", "País", "kW > " + kWThreshold, "kW <= " + kWThreshold, "Total"));
 
         List<String> dataList = new ArrayList<>();
 
@@ -113,19 +113,19 @@ public class ChargerDataAnalyzer {
             }
 
             // Linha da tabela compacta
-            String entryString = String.format("%-20s %-10s %-10s %-10s", country, kWAboveThreshold, kWBelowThreshold, totalChargers);
+            String entryString = String.format("%-20s | %10d | %10d | %10d", country, kWAboveThreshold, kWBelowThreshold, totalChargers);
             dataList.add(entryString);
         }
 
-        // Ordenar a lista de dados pelo número total de carregadores (kW acima do limiar)
+        // Ordenar a lista de dados pelo número total de carregadores
         Collections.sort(dataList, (s1, s2) -> {
-            int total1 = Integer.parseInt(s1.split("\\s+")[3]);
-            int total2 = Integer.parseInt(s2.split("\\s+")[3]);
+            int total1 = Integer.parseInt(s1.split("\\s*\\|\\s*")[3].trim());
+            int total2 = Integer.parseInt(s2.split("\\s*\\|\\s*")[3].trim());
             if (total1 != total2) {
-                return total2 - total1; // Ordem decrescente por total de carregadores
+                return total2 - total1; // Descending order by total chargers
             } else {
-                // Em caso de empate, ordem alfabética por país
-                return s1.split("\\s+")[0].compareTo(s2.split("\\s+")[0]);
+                // In case of a tie, alphabetical order by country
+                return s1.split("\\s*\\|\\s*")[0].trim().compareTo(s2.split("\\s*\\|\\s*")[0].trim());
             }
         });
 

@@ -1,5 +1,7 @@
 package tp1.domain;
 
+import java.util.Objects;
+
 public class ChargerData {
     private String supercharger;
     private String streetAddress;
@@ -69,5 +71,17 @@ public class ChargerData {
 
     public String getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChargerData that)) return false;
+        return getStalls() == that.getStalls() && getkW() == that.getkW() && Objects.equals(getSupercharger(), that.getSupercharger()) && Objects.equals(getStreetAddress(), that.getStreetAddress()) && Objects.equals(getCity(), that.getCity()) && Objects.equals(getState(), that.getState()) && Objects.equals(getZip(), that.getZip()) && Objects.equals(getCountry(), that.getCountry()) && Objects.equals(getGps(), that.getGps()) && Objects.equals(getElevm(), that.getElevm()) && Objects.equals(getStatus(), that.getStatus());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSupercharger(), getStreetAddress(), getCity(), getState(), getZip(), getCountry(), getStalls(), getkW(), getGps(), getElevm(), getStatus());
     }
 }

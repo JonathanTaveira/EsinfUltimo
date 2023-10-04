@@ -100,7 +100,7 @@ public class ElectricVehicleAnalyzer {
             totalVehicleCounts.put(country, new HashMap<>());
         }
 
-// Itera sobre os países
+        // Itera sobre os países
         for (String country : dataByCountry.keySet()) {
             List<ElectricVehicleData> dataList = dataByCountry.get(country);
             for (ElectricVehicleData evData : dataList) {

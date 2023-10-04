@@ -24,8 +24,8 @@ public class Second {
                 analyzer.addElectricVehicleData(evData);
             }
 
-            int firstYear = 2011; // Defina o primeiro ano desejado
-            int lastYear = 2022;  // Defina o último ano desejado
+            int firstYear = 2011; // Define o primeiro ano desejado
+            int lastYear = 2022;  // Define o último ano desejado
 
             // Calcula as taxas de crescimento para todos os países
             Map<String, Double> growthRates = analyzer.calculateGrowthRatesForAllCountries(firstYear, lastYear);
@@ -38,7 +38,7 @@ public class Second {
             System.out.println("País                 Taxa de Crescimento");
             for (String country : sortedCountries) {
                 double growthRate = growthRates.get(country);
-                // Formate a taxa de crescimento com duas casas decimais e espaçamento
+                // Formata a taxa de crescimento com duas casas decimais e espaçamento
                 String formattedRate = String.format("%.2f", growthRate);
                 System.out.printf("%-15s         %s%n", country, formattedRate);
             }

@@ -4,10 +4,8 @@ import tp1.domain.ElectricVehicleAnalyzer;
 import tp1.domain.ElectricVehicleData;
 import tp1.domain.FileReader;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+
 
 public class Third {
 

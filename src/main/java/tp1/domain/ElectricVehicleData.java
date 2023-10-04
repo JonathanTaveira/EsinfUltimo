@@ -1,5 +1,7 @@
 package tp1.domain;
 
+import java.util.Objects;
+
 public class ElectricVehicleData {
     private String country;
     private String powertrain;
@@ -27,5 +29,17 @@ public class ElectricVehicleData {
 
     public int getNumberOfVehicles() {
         return numberOfVehicles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ElectricVehicleData that)) return false;
+        return getYear() == that.getYear() && getNumberOfVehicles() == that.getNumberOfVehicles() && Objects.equals(getCountry(), that.getCountry()) && Objects.equals(getPowertrain(), that.getPowertrain());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCountry(), getPowertrain(), getYear(), getNumberOfVehicles());
     }
 }
