@@ -7,6 +7,7 @@ public class ChargerDataAnalyzer {
     private Map<String, Map<Integer, Integer>> chargerDataByCountryKw;
     private Map<String, Double> minimumAutonomyByCountry;
     private Map<String, Map<String, String>> chargerDataByCountryCityLocation;
+
     public ChargerDataAnalyzer() {
         chargerDataByCountryCity = new HashMap<>();
         chargerDataByCountryKw = new HashMap<>();
@@ -171,5 +172,32 @@ public class ChargerDataAnalyzer {
         }
       return minimumAutonomyByCountry;
     }
+
+    public List<String> getChargerDataByCountryCityAndGPS() {
+        List<String> result = new ArrayList<>();
+
+        // Cabeçalho da tabela compacta
+        result.add(String.format("%-20s | %-30s | %-20s | %-10s", "País", "Cidade", "GPS", "Carregadores"));
+
+        for (Map.Entry<String, Map<String, String>> entry : chargerDataByCountryCityLocation.entrySet()) {
+            String country = entry.getKey();
+            Map<String, String> cityGPSData = entry.getValue();
+
+            for (Map.Entry<String, String> cityEntry : cityGPSData.entrySet()) {
+                String city = cityEntry.getKey();
+                String gps = cityEntry.getValue();
+
+                // Obtém o número de carregadores (stalls) para a cidade atual
+                int stalls = chargerDataByCountryCity.getOrDefault(country, new HashMap<>()).getOrDefault(city, 0);
+
+                // Linha da tabela compacta
+                String entryString = String.format("%-20s | %-30s | %-20s | %-10s", country, city, gps, stalls);
+                result.add(entryString);
+            }
+        }
+
+        return result;
+    }
+
 
 }

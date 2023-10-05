@@ -7,6 +7,7 @@ import static tp1.ui.Fourth.fourth;
 import static tp1.ui.Second.second;
 import static tp1.ui.Third.third;
 import tp1.ui.Fifith;
+import tp1.ui.Sixth;
 
 public class Main {
     public static void main(String[] args) {
@@ -44,6 +45,7 @@ public class Main {
                     break;
                 case "6":
                     System.out.println("Option 6 selected");
+                    Sixth.sixth(chargerFilePath);
                     break;
                 case "7":
                     System.out.println("Option 7 selected");
