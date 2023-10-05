@@ -5,10 +5,13 @@ import java.util.*;
 public class ChargerDataAnalyzer {
     private Map<String, Map<String, Integer>> chargerDataByCountryCity;
     private Map<String, Map<Integer, Integer>> chargerDataByCountryKw;
-
+    private Map<String, Double> minimumAutonomyByCountry;
+    private Map<String, Map<String, String>> chargerDataByCountryCityLocation;
     public ChargerDataAnalyzer() {
         chargerDataByCountryCity = new HashMap<>();
         chargerDataByCountryKw = new HashMap<>();
+        minimumAutonomyByCountry = new HashMap<>();
+        chargerDataByCountryCityLocation = new HashMap<>();
     }
 
     public void analyzeChargerData(List<ChargerData> chargerDataList) {
@@ -17,12 +20,22 @@ public class ChargerDataAnalyzer {
             String city = data.getCity();
             int kW = data.getkW();
             int stalls = data.getStalls();
+            String gps = data.getGps();
 
             // Atualizar o mapa por país e cidade
             updateChargerDataByCountryCity(country, city, stalls);
 
             // Atualizar o mapa por país e kW
             updateChargerDataByCountryKw(country, kW, stalls);
+
+
+            if (!chargerDataByCountryCityLocation.containsKey(country)) {
+                chargerDataByCountryCityLocation.put(country, new HashMap<>() );
+            }
+
+            Map<String,String> chargerMap = chargerDataByCountryCityLocation.get(country);
+            chargerMap.put(city, gps);
+            chargerDataByCountryCityLocation.replace(country,chargerMap);
         }
     }
 
@@ -135,5 +148,28 @@ public class ChargerDataAnalyzer {
         return result;
     }
 
+
+    //André Maia
+    public Map<String, Double> calculateMinimumAutonomy() {
+
+        for (Map.Entry<String, Map<String,String> > entry : chargerDataByCountryCityLocation.entrySet()) {
+
+            if (!minimumAutonomyByCountry.containsKey(entry.getKey())){
+
+                Map<String,String> chargerMap = chargerDataByCountryCityLocation.get(entry.getKey());
+                List<Coordinates> coordinatesList = new ArrayList<>();
+                // Converter as coordenadas GPS de string para objetos Coordinates
+                for (Map.Entry<String, String> cityCharger : chargerMap.entrySet()) {
+                    Coordinates coordinates = Utils.parseCoordinates(cityCharger.getValue());
+                    coordinatesList.add(coordinates);
+
+                }
+
+                double minimumAutonomy = Utils.calculateMaxDistance(coordinatesList);
+                minimumAutonomyByCountry.put(entry.getKey(), minimumAutonomy);
+            }
+        }
+      return minimumAutonomyByCountry;
+    }
 
 }
