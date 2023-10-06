@@ -3,6 +3,8 @@ package tp1.ui;
 import tp1.domain.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Sixth {
     public static void sixth(String excelFilePath) {
@@ -103,20 +105,24 @@ public class Sixth {
             Collections.sort(closestCountriesCitiesAndStalls, new Comparator<String>() {
                 @Override
                 public int compare(String s1, String s2) {
-                    // Extrair o número de stalls de cada entrada e comparar
-                    int stalls1 = extractStalls(s1);
-                    int stalls2 = extractStalls(s2);
-                    return Integer.compare(stalls2, stalls1);
+                    // Extract the number of stalls from the end of each entry and compare
+                    double stalls1 = extractStallsFromEnd(s1);
+                    double stalls2 = extractStallsFromEnd(s2);
+                    return Double.compare(stalls2, stalls1);
                 }
 
-                private int extractStalls(String input) {
-                    String numericPart = input.replaceAll("[^0-9]", "");
-                    if (!numericPart.isEmpty()) {
-                        return Integer.parseInt(numericPart);
+                private double extractStallsFromEnd(String input) {
+                    // Use regex to find the last decimal number in the string
+                    Matcher matcher = Pattern.compile("\\d+(\\.\\d+)?").matcher(input);
+                    double result = 0.0;
+                    while (matcher.find()) {
+                        // Parse the last match as a double
+                        result = Double.parseDouble(matcher.group());
                     }
-                    return 0; // Retorna 0 se a String estiver vazia
+                    return result;
                 }
             });
+
 
             System.out.println("POI at Latitude " + poiCoordinates.getLatitude() + ", Longitude " + poiCoordinates.getLongitude() + ":");
             for (String countryCityStalls : closestCountriesCitiesAndStalls) {
