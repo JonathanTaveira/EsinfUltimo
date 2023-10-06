@@ -57,64 +57,29 @@ public class Sixth {
         }
 
 
-        // Criação da tabela de distâncias com cabeçalhos
-        int numRows = coordinatesList.size();
-        int numCols = coordinatesListInput.size();
-
-        // Lista para armazenar os dados da tabela como strings
-        List<String> tableData = new ArrayList<>();
-
-        // Criação dos cabeçalhos da tabela
-        StringBuilder headerRow = new StringBuilder("| País | Cidade |");
-        for (int i = 1; i <= numCols; i++) {
-            headerRow.append(String.format(" POI(%d) |", i));
-        }
-        tableData.add(headerRow.toString());
-
-        // Preenchimento da tabela e armazenamento dos valores na lista
-        for (int i = 0; i < numRows; i++) {
-            StringBuilder rowData = new StringBuilder("|");
-
-            // Adicionar o País e a Cidade na primeira e segunda coluna
-            String[] parts = chargerDataByCountryCityAndGPS.get(i).split("\\s*\\|\\s*");
-            if (parts.length >= 2) {
-                String country = parts[0].trim();
-                String city = parts[1].trim();
-                rowData.append(String.format(" %s | %s |", country, city));
-            } else {
-                rowData.append(" N/A | N/A |"); // Caso não haja informações de País e Cidade
-            }
-
-            for (int j = 0; j < numCols; j++) {
-                Coordinates inputCoord = coordinatesListInput.get(j);
-                Coordinates coord = coordinatesList.get(i);
-                double distance = Utils.calculateDistance(inputCoord, coord);
-                rowData.append(String.format(" %.2f |", distance));
-            }
-            tableData.add(rowData.toString());
-        }
-
-        // Imprime a lista de dados da tabela (opcional)
-        for (String row : tableData) {
-            System.out.println(row);
-        }
-
         // Map para armazenar países, cidades, e carregadores para cada POI
         Map<Coordinates, List<String>> closestCountriesCitiesAndStallsMap = new HashMap<>();
 
         // Calcular os países e cidades mais próximos para cada POI
-        for (int j = 0; j < numCols; j++) {
+        for (int j = 0; j < coordinatesListInput.size(); j++) {
             Coordinates inputCoord = coordinatesListInput.get(j);
 
             // Lista para armazenar os países, cidades e número de stalls mais próximos para este POI
             List<String> closestCountriesCitiesAndStalls = new ArrayList<>();
 
-            for (int i = 0; i < numRows; i++) {
+            for (int i = 0; i < coordinatesList.size(); i++) {
                 Coordinates coord = coordinatesList.get(i);
                 double distance = Utils.calculateDistance(inputCoord, coord);
 
-                // Inserir um scan
-                if (distance <= 100) {
+                for (int k = 0; k < coordinatesListInput.size(); k++){
+                    double diff = Utils.calculateDistance(coordinatesListInput.get(k), coord);
+                    if (diff < distance){
+                        distance = 999999999;
+                    }
+                }
+
+
+                if (distance != 999999999) {
                     String[] parts = chargerDataByCountryCityAndGPS.get(i).split("\\s*\\|\\s*");
                     if (parts.length >= 4) {
                         String country = parts[0].trim();
@@ -125,20 +90,33 @@ public class Sixth {
                 }
             }
 
-            // Ordenar a lista
-            closestCountriesCitiesAndStalls.sort((s1, s2) -> {
-                int stalls1 = Integer.parseInt(s1.replaceAll(".*\\(Stalls: (\\d+)\\).*", "$1"));
-                int stalls2 = Integer.parseInt(s2.replaceAll(".*\\(Stalls: (\\d+)\\).*", "$1"));
-                return stalls2 - stalls1;
-            });
 
             closestCountriesCitiesAndStallsMap.put(inputCoord, closestCountriesCitiesAndStalls);
         }
 
-        // Imprimir os países, cidades e número de stalls mais próximos para cada POI
+        // Imprimir os países, cidades e número de stalls mais próximos para cada POI, ordenados por stalls
         for (Map.Entry<Coordinates, List<String>> entry : closestCountriesCitiesAndStallsMap.entrySet()) {
             Coordinates poiCoordinates = entry.getKey();
             List<String> closestCountriesCitiesAndStalls = entry.getValue();
+
+            // Ordenar a lista com base no número de stalls
+            Collections.sort(closestCountriesCitiesAndStalls, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    // Extrair o número de stalls de cada entrada e comparar
+                    int stalls1 = extractStalls(s1);
+                    int stalls2 = extractStalls(s2);
+                    return Integer.compare(stalls2, stalls1);
+                }
+
+                private int extractStalls(String input) {
+                    String numericPart = input.replaceAll("[^0-9]", "");
+                    if (!numericPart.isEmpty()) {
+                        return Integer.parseInt(numericPart);
+                    }
+                    return 0; // Retorna 0 se a String estiver vazia
+                }
+            });
 
             System.out.println("POI at Latitude " + poiCoordinates.getLatitude() + ", Longitude " + poiCoordinates.getLongitude() + ":");
             for (String countryCityStalls : closestCountriesCitiesAndStalls) {
@@ -146,7 +124,5 @@ public class Sixth {
             }
             System.out.println();
         }
-
-
     }
 }
