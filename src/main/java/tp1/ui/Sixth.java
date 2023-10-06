@@ -42,17 +42,43 @@ public class Sixth {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter the number of points you want to insert: ");
-        int numberOfPoints = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
-
+        int numberOfPoints = 0;
+        while (true) {
+            try {
+                numberOfPoints = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+            }
+        }
         List<Coordinates> coordinatesListInput = new ArrayList<>();
 
         for (int i = 1; i <= numberOfPoints; i++) {
-            System.out.print("Enter the latitude for P" + i + ": ");
-            double latitude = scanner.nextDouble();
-            System.out.print("Enter the longitude for P" + i + ": ");
-            double longitude = scanner.nextDouble();
-            scanner.nextLine(); // Consume the newline character
+            double latitude, longitude;
+
+            while (true) {
+                System.out.print("Enter the latitude for P" + i + ": ");
+                String input = scanner.nextLine();
+
+                try {
+                    latitude = Double.parseDouble(input);
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid numeric value for latitude.");
+                }
+            }
+
+            while (true) {
+                System.out.print("Enter the longitude for P" + i + ": ");
+                String input = scanner.nextLine();
+
+                try {
+                    longitude = Double.parseDouble(input);
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid numeric value for longitude.");
+                }
+            }
 
             Coordinates coordinates = new Coordinates(latitude, longitude);
             coordinatesListInput.add(coordinates);
