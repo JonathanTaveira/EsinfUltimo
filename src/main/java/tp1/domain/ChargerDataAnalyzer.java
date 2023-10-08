@@ -9,12 +9,15 @@ public class ChargerDataAnalyzer {
     private Map<String, Map<String, String>> chargerDataByCountryCityLocation;
     private Map<String, Integer> chargerDataByCountryStalls;
 
+    private Map<String, Map<String, Integer>> chargerDataByCountryCityKws;
+
     public ChargerDataAnalyzer() {
         chargerDataByCountryCity = new HashMap<>();
         chargerDataByCountryKw = new HashMap<>();
         minimumAutonomyByCountry = new HashMap<>();
         chargerDataByCountryCityLocation = new HashMap<>();
         chargerDataByCountryStalls = new HashMap<>();
+        chargerDataByCountryCityKws = new HashMap<>();
     }
 
     public void analyzeChargerData(List<ChargerData> chargerDataList) {
@@ -24,6 +27,8 @@ public class ChargerDataAnalyzer {
             int kW = data.getkW();
             int stalls = data.getStalls();
             String gps = data.getGps();
+            String status = data.getStatus();
+            String state = data.getState();
 
             // Atualizar o mapa por país e cidade
             updateChargerDataByCountryCity(country, city, stalls);
@@ -31,14 +36,23 @@ public class ChargerDataAnalyzer {
             // Atualizar o mapa por país e kW
             updateChargerDataByCountryKw(country, kW, stalls);
 
-
-            if (!chargerDataByCountryCityLocation.containsKey(country)) {
-                chargerDataByCountryCityLocation.put(country, new HashMap<>() );
+            if (status.equals("Open")) {
+                if (!chargerDataByCountryCityKws.containsKey(country)) {
+                    chargerDataByCountryCityKws.put(country, new HashMap<>());
+                }
+                Map<String, Integer> chargerCityCapacity = chargerDataByCountryCityKws.get(country);
+                Integer kws = (data.getkW() * data.getStalls());
+                chargerCityCapacity.put(city, kws);
+                chargerDataByCountryCityKws.replace(country, chargerCityCapacity);
             }
 
-            Map<String,String> chargerMap = chargerDataByCountryCityLocation.get(country);
+            if (!chargerDataByCountryCityLocation.containsKey(country)) {
+                chargerDataByCountryCityLocation.put(country, new HashMap<>());
+            }
+
+            Map<String, String> chargerMap = chargerDataByCountryCityLocation.get(country);
             chargerMap.put(city, gps);
-            chargerDataByCountryCityLocation.replace(country,chargerMap);
+            chargerDataByCountryCityLocation.replace(country, chargerMap);
         }
     }
 
@@ -155,11 +169,11 @@ public class ChargerDataAnalyzer {
     //André Maia
     public Map<String, Double> calculateMinimumAutonomy() {
 
-        for (Map.Entry<String, Map<String,String> > entry : chargerDataByCountryCityLocation.entrySet()) {
+        for (Map.Entry<String, Map<String, String>> entry : chargerDataByCountryCityLocation.entrySet()) {
 
-            if (!minimumAutonomyByCountry.containsKey(entry.getKey())){
+            if (!minimumAutonomyByCountry.containsKey(entry.getKey())) {
 
-                Map<String,String> chargerMap = chargerDataByCountryCityLocation.get(entry.getKey());
+                Map<String, String> chargerMap = chargerDataByCountryCityLocation.get(entry.getKey());
                 List<Coordinates> coordinatesList = new ArrayList<>();
                 // Converter as coordenadas GPS de string para objetos Coordinates
                 for (Map.Entry<String, String> cityCharger : chargerMap.entrySet()) {
@@ -172,7 +186,7 @@ public class ChargerDataAnalyzer {
                 minimumAutonomyByCountry.put(entry.getKey(), minimumAutonomy);
             }
         }
-      return minimumAutonomyByCountry;
+        return minimumAutonomyByCountry;
     }
 
     public List<String> getChargerDataByCountryCityAndGPS() {
@@ -215,4 +229,38 @@ public class ChargerDataAnalyzer {
 
         return chargerDataByCountryStalls;
     }
+
+       //Dado um conjunto de países (Country) ou estados (State) passado por parâmetro,
+       // devolver uma lista ordenada decrescentemente dos top-N estados (State)
+       // com maior capacidade de carregamento, valor acumulado da capacidade de carregamento
+       // e conjunto das cidades (City) que contribuem para esse Top- N,
+       // sendo que o valor N é passado por parâmetro, e a capacidade de carregamento
+       // é o somatório do no de postos (Stalls) x potência (kW) de cada um dos Supercharger cujo Status é “Open”
+       public void getCountryChargersOpenMax ( List<String> dados ) {
+
+           List<String> result = new ArrayList<>();
+           for (Map.Entry<String, Map<String, Integer>> entry : chargerDataByCountryCityKws.entrySet()) {
+               if(dados.contains(entry.getKey())) {
+                  int maximo = 0;
+                  result.clear();
+                  Map<String,Integer> map = chargerDataByCountryCityKws.get(entry.getValue());
+                  for (Map.Entry<String,Integer> charger : map.entrySet())  {
+                       maximo += charger.getValue();
+                       result.add(charger.getKey());
+                  }
+                  System.out.printf("_____________________________________");
+                  System.out.printf("Pais :" + entry.getKey() + "\n");
+                  System.out.printf("Capacidade : " + maximo + "\n");
+                  System.out.printf("Cidades: ");
+                   for (String cidade : dados) {
+                      System.out.printf(cidade + "\t ");
+                   }
+                  System.out.printf("_____________________________________\n");
+
+               }
+           }
+
+       }
+    
+
 }
