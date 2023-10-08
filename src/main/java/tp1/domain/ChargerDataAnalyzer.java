@@ -7,12 +7,14 @@ public class ChargerDataAnalyzer {
     private Map<String, Map<Integer, Integer>> chargerDataByCountryKw;
     private Map<String, Double> minimumAutonomyByCountry;
     private Map<String, Map<String, String>> chargerDataByCountryCityLocation;
+    private Map<String, Integer> chargerDataByCountryStalls;
 
     public ChargerDataAnalyzer() {
         chargerDataByCountryCity = new HashMap<>();
         chargerDataByCountryKw = new HashMap<>();
         minimumAutonomyByCountry = new HashMap<>();
         chargerDataByCountryCityLocation = new HashMap<>();
+        chargerDataByCountryStalls = new HashMap<>();
     }
 
     public void analyzeChargerData(List<ChargerData> chargerDataList) {
@@ -199,5 +201,18 @@ public class ChargerDataAnalyzer {
         return result;
     }
 
+    public Map<String, Integer> getChargerDataByStalls(List<ChargerData> chargerDataList) {
+        for (ChargerData chargerData : chargerDataList) {
+            String country = chargerData.getCountry();
+            if (chargerDataByCountryStalls.containsKey(country)) {
+                int newStalls = chargerDataByCountryStalls.get(country) + chargerData.getStalls();
+                chargerDataByCountryStalls.put(country, newStalls);
+            } else {
+                chargerDataByCountryStalls.put(country, chargerData.getStalls());
+            }
 
+        }
+
+        return chargerDataByCountryStalls;
+    }
 }

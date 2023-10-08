@@ -9,10 +9,14 @@ public class ElectricVehicleAnalyzer {
     private Map<String, List<ElectricVehicleData>> dataByCountry;
     private Map<String, Map<Integer, Integer>> yearVehicleCounts;
 
+    private Map<String, Integer> totalVehicleByCountry;
+
     public ElectricVehicleAnalyzer() {
         dataByCountry = new HashMap<>();
         yearVehicleCounts = new HashMap<>();
+        totalVehicleByCountry = new HashMap<>();
     }
+
     public void addElectricVehicleData(ElectricVehicleData evData) {
         String country = evData.getCountry();
         dataByCountry.computeIfAbsent(country, k -> new ArrayList<>()).add(evData);
@@ -119,6 +123,43 @@ public class ElectricVehicleAnalyzer {
         return totalVehicleCounts;
     }
 
+    public List<String> totalNumberEletricVehiclePerYear(int year, Map<String, Integer> stallsByCountry) {
 
+        List<String> result = new ArrayList<>();
+
+        result.add(String.format("%-20s | %-30s | %-20s | %-10s", "País", "Stalls", "Veículos Elétricos", "SC Quota"));
+        for (var electricVehicleData : stallsByCountry.entrySet()) {
+            String country = electricVehicleData.getKey();
+            if (!totalVehicleByCountry.containsKey(country)) continue;
+
+            int totalVehicles = totalVehicleByCountry.get(country);
+
+          //  double ratio = (double) stallsByCountry.get(country) / totalVehicles;
+
+            double ratio = 10.0;
+
+            double scQuota = ((stallsByCountry.get(country) * ratio) / totalVehicles) * 100;
+
+            result.add((String.format("%-20s | %-30s | %-20s | %-10.2f%%", country, stallsByCountry.get(country), totalVehicles, scQuota)));
+
+        }
+        return result;
+    }
+
+    public void totalNumberEletricVehicleByCountry(List<ElectricVehicleData> evDataList, int year) {
+
+        for (ElectricVehicleData electricVehicleData : evDataList) {
+            if (electricVehicleData.getYear() == year) {
+                String country = electricVehicleData.getCountry();
+                if (totalVehicleByCountry.containsKey(country)) {
+                    int newTotal = electricVehicleData.getNumberOfVehicles() + totalVehicleByCountry.get(country);
+                    totalVehicleByCountry.put(country, newTotal);
+                } else {
+                    totalVehicleByCountry.put(country, electricVehicleData.getNumberOfVehicles());
+                }
+            }
+        }
+
+    }
 
 }
