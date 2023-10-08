@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,4 +84,19 @@ public class ChargerDataAnalyzerTest {
         ));
         return chargerDataList;
     }
+
+    @Test
+    public void testGetChargerDataByStalls() {
+        List<ChargerData> chargerDataList = createSampleChargerDataList();
+
+        Map<String, Integer> result = chargerDataAnalyzer.getChargerDataByStalls(chargerDataList);
+
+        assertNotNull(result);
+        assertEquals(1, result.size()); // Assuming there is only one unique country in the sample data
+
+        // Replace "CountryName" with the actual country name in your sample data
+        assertTrue(result.containsKey("CountryName"));
+        assertEquals(20, result.get("CountryName")); // Replace 100 with the expected total stalls for the country
+    }
+
 }
