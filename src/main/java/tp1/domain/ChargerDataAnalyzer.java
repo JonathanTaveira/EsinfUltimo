@@ -11,6 +11,10 @@ public class ChargerDataAnalyzer {
 
     private Map<String, Map<String, Integer>> chargerDataByCountryCityKws;
 
+    private Map<String, Integer> chargerDataStateCapacity;
+    private Map<String, Integer> chargerDataStateCapacitySorted;
+
+
     public ChargerDataAnalyzer() {
         chargerDataByCountryCity = new HashMap<>();
         chargerDataByCountryKw = new HashMap<>();
@@ -18,6 +22,8 @@ public class ChargerDataAnalyzer {
         chargerDataByCountryCityLocation = new HashMap<>();
         chargerDataByCountryStalls = new HashMap<>();
         chargerDataByCountryCityKws = new HashMap<>();
+        chargerDataStateCapacity = new HashMap<>();
+        chargerDataStateCapacitySorted = new LinkedHashMap<>();
     }
 
     public void analyzeChargerData(List<ChargerData> chargerDataList) {
@@ -36,14 +42,25 @@ public class ChargerDataAnalyzer {
             // Atualizar o mapa por país e kW
             updateChargerDataByCountryKw(country, kW, stalls);
 
-            if (status.equals("Open")) {
-                if (!chargerDataByCountryCityKws.containsKey(country)) {
-                    chargerDataByCountryCityKws.put(country, new HashMap<>());
+            if (!chargerDataByCountryCityKws.containsKey(country)) {
+                chargerDataByCountryCityKws.put(country, new HashMap<>());
+            }
+            Map<String, Integer> chargerCityCapacity = chargerDataByCountryCityKws.get(country);
+
+            //Calculo CapacidadeCarga
+            Integer kws = (data.getkW() * data.getStalls());
+
+            //Guardar para cada Cidade a sua CapacidadeCarga
+            chargerCityCapacity.put(city, kws);
+            chargerDataByCountryCityKws.replace(country, chargerCityCapacity);
+
+            if (status.equals("Open") && !state.isBlank() && !state.isEmpty()) {
+                //Guardar para cada Estado a sua CapacidadeCarga)
+                if (!chargerDataStateCapacity.containsKey(state)) {
+                    chargerDataStateCapacity.put(state, 0);
                 }
-                Map<String, Integer> chargerCityCapacity = chargerDataByCountryCityKws.get(country);
-                Integer kws = (data.getkW() * data.getStalls());
-                chargerCityCapacity.put(city, kws);
-                chargerDataByCountryCityKws.replace(country, chargerCityCapacity);
+                Integer x = chargerDataStateCapacity.get(state) + kws;
+                chargerDataStateCapacity.replace(state, x);
             }
 
             if (!chargerDataByCountryCityLocation.containsKey(country)) {
@@ -54,6 +71,17 @@ public class ChargerDataAnalyzer {
             chargerMap.put(city, gps);
             chargerDataByCountryCityLocation.replace(country, chargerMap);
         }
+
+        // Converta o mapa em uma lista de entradas (chave-valor)
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(chargerDataStateCapacity.entrySet());
+        // Ordene a lista com base nos valores em ordem decrescente
+        Collections.sort(list, (entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        for (Map.Entry<String, Integer> entry : list) {
+            chargerDataStateCapacitySorted.put(entry.getKey(), entry.getValue());
+        }
+
+
     }
 
     private void updateChargerDataByCountryCity(String country, String city, int stalls) {
@@ -230,37 +258,46 @@ public class ChargerDataAnalyzer {
         return chargerDataByCountryStalls;
     }
 
-       //Dado um conjunto de países (Country) ou estados (State) passado por parâmetro,
-       // devolver uma lista ordenada decrescentemente dos top-N estados (State)
-       // com maior capacidade de carregamento, valor acumulado da capacidade de carregamento
-       // e conjunto das cidades (City) que contribuem para esse Top- N,
-       // sendo que o valor N é passado por parâmetro, e a capacidade de carregamento
-       // é o somatório do no de postos (Stalls) x potência (kW) de cada um dos Supercharger cujo Status é “Open”
-       public void getCountryChargersOpenMax ( List<String> dados ) {
+    public void getCountryChargersOpenMax ( Integer numero, List<String> dados ) {
 
-           List<String> result = new ArrayList<>();
-           for (Map.Entry<String, Map<String, Integer>> entry : chargerDataByCountryCityKws.entrySet()) {
-               if(dados.contains(entry.getKey())) {
-                  int maximo = 0;
-                  result.clear();
-                  Map<String,Integer> map = chargerDataByCountryCityKws.get(entry.getValue());
-                  for (Map.Entry<String,Integer> charger : map.entrySet())  {
+        List<String> result = new ArrayList<>();
+        for (Map.Entry<String, Map<String, Integer>> entry : chargerDataByCountryCityKws.entrySet()) {
+            if(dados.contains(entry.getKey())) {
+                int maximo = 0;
+                result.clear();
+                Map<String,Integer> map = chargerDataByCountryCityKws.get(entry.getValue());
+                for (Map.Entry<String,Integer> charger : map.entrySet())  {
                        maximo += charger.getValue();
                        result.add(charger.getKey());
-                  }
-                  System.out.printf("_____________________________________");
-                  System.out.printf("Pais :" + entry.getKey() + "\n");
-                  System.out.printf("Capacidade : " + maximo + "\n");
-                  System.out.printf("Cidades: ");
-                   for (String cidade : dados) {
-                      System.out.printf(cidade + "\t ");
-                   }
-                  System.out.printf("_____________________________________\n");
+                }
+                System.out.printf("_____________________________________");
+                System.out.printf("Pais :" + entry.getKey() + "\n");
+                System.out.printf("Capacidade : " + maximo + "\n");
+                System.out.printf("Cidades: ");
+                for (String cidade : dados) {
+                    System.out.printf(cidade + "\t ");
+                }
+                System.out.printf("_____________________________________\n");
+            }
+        }
 
-               }
-           }
+    }
 
-       }
-    
+    public List<String> getStateMax (Integer numero ) {
+        List<String> lista = new ArrayList<>();
+        System.out.printf("\n __ TOP " + numero + " ESTADOS __ \n");
+        int count = 0;
+        for (Map.Entry<String, Integer> entry : chargerDataStateCapacitySorted.entrySet()) {
+            if (count < numero) {
+                lista.add(entry.getKey() + ", ");
+                System.out.println(entry.getKey() + ": " + entry.getValue() + " kws");
+                count++;
+            } else {
+                System.out.printf("______ \n\n");
+                return lista;
+            }
+        }
+        return null;
+    }
 
 }

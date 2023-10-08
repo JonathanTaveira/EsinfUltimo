@@ -6,6 +6,8 @@ import static tp1.ui.First.first;
 import static tp1.ui.Fourth.fourth;
 import static tp1.ui.Second.second;
 import static tp1.ui.Third.third;
+
+import tp1.ui.Eighth;
 import tp1.ui.Fifith;
 import tp1.ui.Seventh;
 import tp1.ui.Sixth;
@@ -54,6 +56,7 @@ public class Main {
                     break;
                 case "8":
                     System.out.println("Option 8 selected");
+                    Eighth.eighth(chargerFilePath);
                     break;
                 case "9":
                     System.out.println("Exiting the application...");
