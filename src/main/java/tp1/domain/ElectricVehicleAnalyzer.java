@@ -133,7 +133,7 @@ public class ElectricVehicleAnalyzer {
 
           //  double ratio = (double) stallsByCountry.get(country) / totalVehicles;
 
-            double ratio = 0.1;
+            double ratio = 10; //correção, valor inicial
 
             double scQuota = ((stallsByCountry.get(country) * ratio) / totalVehicles) * 100;
 
