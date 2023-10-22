@@ -6,11 +6,11 @@ public class StaticVehicleData {
     private String engineConfigAndDisplacement;
     private String transmission;
     private String driveWheels;
-    private double generalizedWeight;
+    private String generalizedWeight;
     private String vehId;
 
     public StaticVehicleData(String vehId, String vehicleType, String vehicleClass, String engineConfigAndDisplacement,
-                             String transmission, String driveWheels, double generalizedWeight) {
+                             String transmission, String driveWheels, String generalizedWeight) {
         this.vehId = vehId;
         this.vehicleType = vehicleType;
         this.vehicleClass = vehicleClass;
@@ -41,7 +41,7 @@ public class StaticVehicleData {
         return driveWheels;
     }
 
-    public double getGeneralizedWeight() {
+    public String getGeneralizedWeight() {
         return generalizedWeight;
     }
 
@@ -66,7 +66,7 @@ public class StaticVehicleData {
         this.driveWheels = driveWheels;
     }
 
-    public void setGeneralizedWeight(double generalizedWeight) {
+    public void setGeneralizedWeight(String generalizedWeight) {
         this.generalizedWeight = generalizedWeight;
     }
 }
