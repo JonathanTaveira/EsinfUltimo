@@ -44,7 +44,7 @@ public class DataImporter {
         if (csvData != null) {
             for (String[] data : csvData) {
                 StaticVehicleData staticData = new StaticVehicleData(
-                        data[1], data[2], data[3], data[4], data[5], Double.parseDouble(data[6])
+                        data[0], data[1], data[2], data[3], data[4], data[5], Double.parseDouble(data[6])
                 );
                 staticDataList.add(staticData);
             }

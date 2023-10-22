@@ -7,9 +7,11 @@ public class StaticVehicleData {
     private String transmission;
     private String driveWheels;
     private double generalizedWeight;
+    private String vehId;
 
-    public StaticVehicleData(String vehicleType, String vehicleClass, String engineConfigAndDisplacement,
+    public StaticVehicleData(String vehId, String vehicleType, String vehicleClass, String engineConfigAndDisplacement,
                              String transmission, String driveWheels, double generalizedWeight) {
+        this.vehId = vehId;
         this.vehicleType = vehicleType;
         this.vehicleClass = vehicleClass;
         this.engineConfigAndDisplacement = engineConfigAndDisplacement;
