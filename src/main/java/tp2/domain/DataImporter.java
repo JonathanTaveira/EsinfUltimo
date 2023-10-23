@@ -63,7 +63,7 @@ public class DataImporter {
                         Double.parseDouble(data[0]), data[1], data[2], Long.parseLong(data[3]),
                         Double.parseDouble(data[4]), Double.parseDouble(data[5]),
                         Double.parseDouble(data[6]), Double.parseDouble(data[7]),
-                        Integer.parseInt(data[8]), Double.parseDouble(data[9]),
+                        data[8], Double.parseDouble(data[9]),
                         Double.parseDouble(data[10]), Double.parseDouble(data[11]),
                         Double.parseDouble(data[12]), Double.parseDouble(data[13]),
                         Double.parseDouble(data[14]), Double.parseDouble(data[15]),

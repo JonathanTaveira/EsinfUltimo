@@ -8,7 +8,7 @@ public class TripData {
     private double longitude;
     private double vehicleSpeed;
     private double maf;
-    private int engineRPM;
+    private String engineRPM;
     private double absoluteLoad;
     private double outsideAirTemp;
     private double fuelRate;
@@ -25,7 +25,7 @@ public class TripData {
     private String vehID;
 
     public TripData(double dayNum, String vehID, String trip, long timestamp, double latitude, double longitude, double vehicleSpeed,
-                    double maf, int engineRPM, double absoluteLoad, double outsideAirTemp, double fuelRate,
+                    double maf, String engineRPM, double absoluteLoad, double outsideAirTemp, double fuelRate,
                     double acPowerKW, double acPowerWatts, double heaterPowerWatts, double hvBatteryCurrent,
                     double hvBatterySOC, double hvBatteryVoltage, double shortTermFuelTrimBank1,
                     double shortTermFuelTrimBank2, double longTermFuelTrimBank1, double longTermFuelTrimBank2) {
@@ -57,9 +57,6 @@ public class TripData {
         return vehID;
     }
 
-    public void setVehId(String vehID) {
-        this.vehID = vehID;
-    }
 
     public double getDayNum() {
         return dayNum;
@@ -89,7 +86,7 @@ public class TripData {
         return maf;
     }
 
-    public int getEngineRPM() {
+    public String getEngineRPM() {
         return engineRPM;
     }
 
@@ -175,7 +172,7 @@ public class TripData {
         this.maf = maf;
     }
 
-    public void setEngineRPM(int engineRPM) {
+    public void setEngineRPM(String engineRPM) {
         this.engineRPM = engineRPM;
     }
 
@@ -229,5 +226,9 @@ public class TripData {
 
     public void setLongTermFuelTrimBank2(double longTermFuelTrimBank2) {
         this.longTermFuelTrimBank2 = longTermFuelTrimBank2;
+    }
+
+    public void setVehId(String vehID) {
+        this.vehID = vehID;
     }
 }
